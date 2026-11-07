@@ -65,12 +65,10 @@ def main():
     template = BUILD / 'defconfig/mt7975-ipailna-high-power.config'
     wireless = []
     for line in template.read_text().splitlines():
-        if re.match(r'(?:# )?CONFIG_(MTK_|CONNINFRA_)', line):
+        if re.match(r'(?:# )?CONFIG_(MTK_|CONNINFRA_|WARP_|WED_)', line):
             wireless.append(line)
     if '# CONFIG_MTK_MT7986_NEW_FW is not set' not in wireless:
         raise RuntimeError('Upstream high-power template changed: review required')
-    (BUILD / '.config').write_text('\n'.join(wireless) + '\n' +
-                                   (ROOT / 'config/profile.config').read_text())
     overlay = ROOT / 'files'
     run('cp', '-a', str(overlay) + '/.', BUILD / 'files')
     run('./scripts/feeds', 'update', '-a', cwd=BUILD)
@@ -79,17 +77,21 @@ def main():
     run('./scripts/feeds', 'install', '-f', '-a', '-p', 'passwall_packages', cwd=BUILD)
     run('./scripts/feeds', 'install', '-f', '-a', '-p', 'passwall_luci', cwd=BUILD)
     run('./scripts/feeds', 'install', '-f', '-a', '-p', 'istore', cwd=BUILD)
+    # Feed indexing can normalize .config before external package symbols exist.
+    # Apply the requested selections only after all feed packages are installed.
+    (BUILD / '.config').write_text('\n'.join(wireless) + '\n' +
+                                   (ROOT / 'config/profile.config').read_text())
     run('make', 'defconfig', cwd=BUILD)
     # Docker is built as optional userspace; its kernel dependencies belong in ROM.
     cfg = BUILD / '.config'
     cfg.write_text(re.sub(r'^(CONFIG_PACKAGE_kmod-[^=]+)=m$', r'\1=y',
                           cfg.read_text(), flags=re.M))
     run('make', 'defconfig', cwd=BUILD)
-    run('python3', ROOT / 'scripts/validate.py', 'config')
     (ROOT / 'logs').mkdir(exist_ok=True)
     (ROOT / 'logs/resolved.config').write_text(cfg.read_text())
     diff = subprocess.check_output(['git', 'diff'], cwd=BUILD, text=True)
     (ROOT / 'logs/source.patch').write_text(diff)
+    run('python3', ROOT / 'scripts/validate.py', 'config')
     print('Pinned sources and resolved N60 PRO configuration ready.', flush=True)
 
 if __name__ == '__main__':

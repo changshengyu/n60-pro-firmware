@@ -25,6 +25,10 @@ def require(cfg, names, value='y'):
 
 def check_config():
     cfg = values(BUILD / '.config')
+    requested = values(ROOT / 'config/profile.config')
+    for name, value in requested.items():
+        if name.startswith('CONFIG_PACKAGE_') and value in ('y', 'm'):
+            require(cfg, [name], value)
     require(cfg, ['CONFIG_TARGET_mediatek_filogic',
         'CONFIG_TARGET_mediatek_filogic_DEVICE_netcore_n60-pro',
         'CONFIG_PACKAGE_luci-app-passwall', 'CONFIG_PACKAGE_luci-app-store',
@@ -43,6 +47,10 @@ def check_config():
         'CONFIG_KERNEL_NAMESPACES', 'CONFIG_KERNEL_NET_NS', 'CONFIG_KERNEL_SECCOMP'])
     require(cfg, ['CONFIG_PACKAGE_docker', 'CONFIG_PACKAGE_dockerd',
                   'CONFIG_PACKAGE_containerd', 'CONFIG_PACKAGE_runc'], 'm')
+    require(cfg, ['CONFIG_WARP_VERSION'], '2')
+    require(cfg, ['CONFIG_WARP_CHIPSET'], '"mt7986"')
+    require(cfg, ['CONFIG_WARP_NEW_FW', 'CONFIG_MTK_WARP_V2'])
+    require(cfg, ['CONFIG_first_card_name'], '"MT7986"')
     for name in ('CONFIG_TARGET_MULTI_PROFILE', 'CONFIG_TARGET_mediatek_mt7986',
                  'CONFIG_MTK_MT7986_NEW_FW', 'CONFIG_PACKAGE_kmod-mt7915e',
                  'CONFIG_PACKAGE_kmod-mt7986-firmware', 'CONFIG_PACKAGE_wpad-openssl'):

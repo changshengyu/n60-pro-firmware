@@ -44,7 +44,9 @@ jobs:
           free -h
       - name: Fetch locked sources and validate configuration
         id: prepare
-        run: python3 scripts/prepare.py 2>&1 | tee prepare.log
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare.py 2>&1 | tee prepare.log
       - name: Restore downloads and compiler caches
         id: cache
         if: ${{ !inputs.config_only }}
@@ -94,3 +96,4 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
           compression-level: 1
+          include-hidden-files: true
