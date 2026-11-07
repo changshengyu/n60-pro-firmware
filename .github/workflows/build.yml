@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       jobs:
-        description: Parallel build jobs (use 2 for standard private runners)
-        default: '2'
+        description: Parallel build jobs (4 for public runners, 2 for private)
+        default: '4'
         required: true
       config_only:
         description: Validate feeds and resolved configuration without compiling
