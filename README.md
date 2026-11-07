@@ -9,6 +9,8 @@
 - 6.6 内核；MTK 专有无线驱动；移植上游高功率模板中的无线参数。
 - 单独选择 N60 PRO；移除该设备默认 MT76 包，避免两套驱动共存。
 - PassWall 26.11.3-1 中文界面、Xray、sing-box；iStore 商店。
+- 保留多 WAN（mwan3）、Lucky、轻量 ksmbd 网络共享、UPnP、HNAT/HQOS。
+- DDNS-Go、ZeroTier、USB 打印、HomeProxy/OpenClash 管理插件另附依赖闭合的离线包。
 - CIFS、USB/UAS、ext4、exFAT、挂载工具和 Docker 所需内核功能。
 - Docker/containerd/runc/管理界面作为同批次离线安装包，不占基础固件空间。
 - LAN 为 `192.168.6.1`；PassWall 默认不启用，导入自己的节点后再启用。
@@ -28,6 +30,7 @@ Artifacts 包含：
 - `*netcore_n60-pro*sysupgrade.bin`：完整固件。
 - `packages/`：本次构建生成的匹配 IPK 包，尤其内核模块。
 - `docker-offline/`：相对本固件依赖闭合的 Docker 安装包。
+- `optional-offline/`：其他应用分目录的离线包。OpenClash 的 Mihomo 核心需在启用前由插件下载；不同透明代理一次只启用一个。
 - `validation.json`、`image-metadata.json`、`SHA256SUMS`。
 - 最终固件配置、内核配置、源码补丁、锁定版本文件。
 
@@ -48,6 +51,9 @@ Wi-Fi、2.5G 网口、硬件加速和 Docker/代理共存需要刷入后检查�
 
 本项目不自动刷机，不格式化现有 U 盘，不改写 BL2/FIP/Factory。
 固件元数据与分区不符时，不应强制跳过校验。
+
+多 WAN 提供故障切换/负载均衡，不等于单连接带宽叠加；需要接入多条线路后配置。
+网络共享集成 ksmbd，但不会自动将磁盘目录公开共享。
 
 ## 外接存储与 Docker
 

@@ -43,6 +43,12 @@ def main():
     golang = ROOT / 'sources/packages/lang/golang'
     shutil.rmtree(golang)
     shutil.copytree(ROOT / 'sources/toolchain_golang/lang/golang', golang)
+    lucky_makefile = ROOT / 'sources/lucky/lucky/Makefile'
+    lucky_text = lucky_makefile.read_text()
+    if 'PKG_VERSION:=3.5.0' not in lucky_text or 'PKG_HASH:=skip' not in lucky_text:
+        raise RuntimeError('Lucky recipe changed: review asset hash')
+    lucky_makefile.write_text(lucky_text.replace('PKG_HASH:=skip',
+        'PKG_HASH:=' + LOCK['lucky_arm64_sha256']))
     (BUILD / 'feeds.conf').write_text('\n'.join(feeds) + '\n')
     # Only change the N60 PRO package selection. Preserve its DTS and partitions.
     path = BUILD / 'target/linux/mediatek/image/filogic.mk'

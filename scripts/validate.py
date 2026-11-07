@@ -34,7 +34,11 @@ def check_config():
         'CONFIG_PACKAGE_kmod-fs-cifs', 'CONFIG_PACKAGE_kmod-fs-ext4',
         'CONFIG_PACKAGE_kmod-usb-storage-uas', 'CONFIG_PACKAGE_block-mount',
         'CONFIG_PACKAGE_kmod-veth', 'CONFIG_PACKAGE_kmod-br-netfilter',
-        'CONFIG_PACKAGE_kmod-nft-tproxy', 'CONFIG_KERNEL_CGROUPS',
+        'CONFIG_PACKAGE_kmod-nft-tproxy', 'CONFIG_PACKAGE_mwan3',
+        'CONFIG_PACKAGE_luci-app-mwan3', 'CONFIG_PACKAGE_lucky',
+        'CONFIG_PACKAGE_luci-app-lucky', 'CONFIG_PACKAGE_ksmbd-server',
+        'CONFIG_PACKAGE_kmod-fs-ksmbd', 'CONFIG_PACKAGE_luci-app-upnp',
+        'CONFIG_PACKAGE_kmod-usb-printer', 'CONFIG_KERNEL_CGROUPS',
         'CONFIG_KERNEL_MEMCG', 'CONFIG_KERNEL_CGROUP_PIDS',
         'CONFIG_KERNEL_NAMESPACES', 'CONFIG_KERNEL_NET_NS', 'CONFIG_KERNEL_SECCOMP'])
     require(cfg, ['CONFIG_PACKAGE_docker', 'CONFIG_PACKAGE_dockerd',
