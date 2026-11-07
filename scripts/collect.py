@@ -106,6 +106,10 @@ def main():
         name = info['Package']
         if info.get('Architecture') not in ('all','noarch','aarch64_cortex-a53'):
             continue
+        if name.startswith('kmod-'):
+            match = re.search(r'\bkernel\s*\(=\s*([^\)]+)\)', info.get('Depends', ''))
+            if not match or match[1].strip() != installed['kernel']:
+                raise RuntimeError(f'Kernel ABI mismatch for {name}: {info.get("Depends")}')
         dest = package_dir / path.name
         if dest.exists():
             if hashlib.sha256(dest.read_bytes()).digest() != hashlib.sha256(path.read_bytes()).digest():
@@ -180,6 +184,7 @@ def main():
         'kernel':installed['kernel'],'passwall':installed['luci-app-passwall'],
         'istore':installed['luci-app-store'],'offline_docker_packages':sorted(selected),
         'optional_bundles':optional_bundles,
+        'kernel_abi_checked':True,
         'installed':installed}
     (OUT / 'validation.json').write_text(json.dumps(summary, indent=2) + '\n')
     checksums = []

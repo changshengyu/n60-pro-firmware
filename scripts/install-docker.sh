@@ -12,6 +12,13 @@ if [ "$fstype" != ext4 ]; then
     echo 'Expected an already mounted ext4 external disk. This script never formats storage.' >&2
     exit 1
 fi
+root_free_kib="$(df -Pk / | awk 'NR == 2 {print $4}')"
+case "$root_free_kib" in ''|*[!0-9]*) echo 'Cannot determine free root filesystem space.' >&2; exit 1;; esac
+if [ "$root_free_kib" -lt 262144 ]; then
+    echo 'At least 256 MiB free on / is required before installing Docker userspace.' >&2
+    echo 'Configure USB extroot first. Moving only the Docker data directory does not expand /usr/bin.' >&2
+    exit 1
+fi
 here="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 [ -f "$here/SHA256SUMS" ] && (cd "$here" && sha256sum -c SHA256SUMS)
 opkg install "$here"/*.ipk

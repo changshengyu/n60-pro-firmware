@@ -23,6 +23,7 @@ jobs:
       TZ: Asia/Shanghai
       FORCE_UNSAFE_CONFIGURE: '1'
       BUILD_JOBS: ${{ inputs.jobs }}
+      CCACHE_MAXSIZE: 2G
     steps:
       - uses: actions/checkout@v4
       - name: Install build dependencies
@@ -42,7 +43,21 @@ jobs:
           df -h
           free -h
       - name: Fetch locked sources and validate configuration
+        id: prepare
         run: python3 scripts/prepare.py 2>&1 | tee prepare.log
+      - name: Restore downloads and compiler caches
+        id: cache
+        if: ${{ !inputs.config_only }}
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/dl
+            build/.ccache
+            build/tmp/go-build
+          key: n60-${{ runner.os }}-${{ hashFiles('sources.lock.json', 'config/profile.config') }}-${{ github.run_id }}
+          restore-keys: |
+            n60-${{ runner.os }}-${{ hashFiles('sources.lock.json', 'config/profile.config') }}-
+            n60-${{ runner.os }}-
       - name: Download and compile
         if: ${{ !inputs.config_only }}
         run: bash scripts/build.sh
@@ -55,6 +70,15 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           compression-level: 1
+      - name: Save downloads and compiler caches
+        if: ${{ always() && !inputs.config_only && steps.prepare.outcome == 'success' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build/dl
+            build/.ccache
+            build/tmp/go-build
+          key: n60-${{ runner.os }}-${{ hashFiles('sources.lock.json', 'config/profile.config') }}-${{ github.run_id }}
       - name: Preserve configuration and logs
         if: always()
         uses: actions/upload-artifact@v4
