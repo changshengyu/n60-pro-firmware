@@ -1,0 +1,15 @@
+{
+  "profile": "netcore_n60-pro",
+  "kernel_series": "6.6",
+  "passwall_release": "26.11.3-1",
+  "repositories": {
+    "openwrt": {"url": "https://github.com/padavanonly/immortalwrt-mt798x-6.6.git", "commit": "ec9ef10efc65da1e6d1de4e2c043c0e13d08eed8"},
+    "passwall_packages": {"url": "https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git", "commit": "da712cf06cf4e6fd39e147fb36e6ec936003fcc9"},
+    "passwall_luci": {"url": "https://github.com/Openwrt-Passwall/openwrt-passwall.git", "commit": "0b969d5a49743a9725c8dc283b01753c5217dd0d"},
+    "istore": {"url": "https://github.com/linkease/istore.git", "commit": "a97ace34f2da358a015b094d326bba2697697f2e"},
+    "packages": {"url": "https://github.com/immortalwrt/packages.git", "commit": "171d5f9203379f77693807d7283515a873f95df9"},
+    "luci": {"url": "https://github.com/immortalwrt/luci.git", "commit": "d72e293e6fd698af75510b9018fb7e154ae219cc"},
+    "routing": {"url": "https://github.com/openwrt/routing.git", "commit": "00619bc7bc60d8b67ecc490121e45298b122cd6e"},
+    "toolchain_golang": {"url": "https://github.com/immortalwrt/packages.git", "commit": "395ca4d2df4754cdb8e89bc4b37cdbcf54d905b0", "role": "golang-backport", "subdir": "lang/golang"}
+  }
+}

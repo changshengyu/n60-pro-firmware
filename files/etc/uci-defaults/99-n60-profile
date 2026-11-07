@@ -1,0 +1,11 @@
+#!/bin/sh
+# Applied only to this newly built firmware. No imported credentials or old overlay.
+uci -q set network.lan.ipaddr='192.168.6.1'
+uci -q commit network
+uci -q set istore.istore.ipv4='1'
+uci -q commit istore
+uci -q set passwall.@global[0].enabled='0'
+uci -q commit passwall
+# Match the IPv4 workaround verified on the user's network; LAN IPv6 stays enabled.
+grep -q '^inet4_only' /etc/wgetrc 2>/dev/null || printf '\ninet4_only = on\n' >> /etc/wgetrc
+exit 0
